@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node --max_old_space_size=512 --optimize_for_size --max_semi_space_size=64 --max_executable_size=64 --gc_interval=100 node_modules/vite/bin/vite.js build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {

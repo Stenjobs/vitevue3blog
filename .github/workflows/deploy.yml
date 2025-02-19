@@ -10,35 +10,46 @@ on:
             - 'package.json'
             - 'vite.config.js'
             
-jobs: 
-
-    deploy:
+jobs:
+    build-and-deploy:
         runs-on: ubuntu-latest
         timeout-minutes: 15
 
         steps:
             - uses: actions/checkout@v4 #使用哪一个已经好了的action，除了这个action之外，还有其他功能的action
 
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                node-version: '18'
+                cache: 'npm'
+
+            - name: Install Dependencies
+              run: npm ci
+
+            - name: Build
+              run: npm run build
+
             - name: Set up SSH
               uses: webfactory/ssh-agent@v0.8.0
               with:
                 ssh-private-key: ${{ secrets.ALIYUN_ESC_SECRET }}
 
-            - name: deploy # 部署
+            - name: Deploy to Server
               run: |
                 echo "Starting deployment..."
-                # 添加 SSH 详细输出
-                ssh -v -o StrictHostKeyChecking=no root@8.134.205.132 '
-                  set -x &&  # 在远程服务器上启用命令回显
-                  echo "Current directory: $(pwd)" &&
-                  cd /project/blogs/vitevue3blog &&
-                  echo "Changed to directory: $(pwd)" &&
-                  git pull &&
-                  # 清理 npm 缓存
-                  npm cache clean --force &&
-                  # 只安装生产依赖
-                  npm install --production --no-optional &&
-                  npm run build
+                # 压缩 dist 目录
+                tar -czf dist.tar.gz dist/
+                
+                # 使用 scp 传输文件到服务器
+                scp -o StrictHostKeyChecking=no dist.tar.gz root@8.134.205.132:/project/blogs/dist/
+                
+                # 在服务器上解压文件
+                ssh -o StrictHostKeyChecking=no root@8.134.205.132 '
+                  cd /project/blogs/dist &&
+                  rm -rf dist &&
+                  tar -xzf dist.tar.gz &&
+                  rm dist.tar.gz
                 ' || {
                     echo "部署失败，错误代码: $?"
                     exit 1
