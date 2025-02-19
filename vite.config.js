@@ -61,5 +61,29 @@ export default defineConfig({
         changeOrigin: true // 是否修改请求头的origin，让服务器认为这个请求来自本域名
       }
     }
+  },
+  build: {
+    // 减小 chunk 大小
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return id.toString().split('node_modules/')[1].split('/')[0].toString();
+          }
+        }
+      }
+    },
+    // 禁用 sourcemap
+    sourcemap: false,
+    // 减小打包体积
+    minify: 'esbuild',
+    // 设置较大的 chunk 警告限制
+    chunkSizeWarningLimit: 2000,
+    // 启用 CSS 代码分割
+    cssCodeSplit: true
+  },
+  optimizeDeps: {
+    // 强制预构建依赖
+    force: true
   }
 })
