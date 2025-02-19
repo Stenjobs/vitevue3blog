@@ -34,7 +34,10 @@ jobs:
                   cd /project/blogs/vitevue3blog &&
                   echo "Changed to directory: $(pwd)" &&
                   git pull &&
-                  npm install &&
+                  # 清理 npm 缓存
+                  npm cache clean --force &&
+                  # 只安装生产依赖
+                  npm install --production --no-optional &&
                   npm run build
                 ' || {
                     echo "部署失败，错误代码: $?"
