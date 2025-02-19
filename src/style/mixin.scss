@@ -1,0 +1,62 @@
+@mixin flexFullCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin bounce-effect {
+  .bounce-enter-active {
+    animation: bounce-in 0.6s;
+  }
+  .bounce-leave-active {
+    animation: bounce-in 0.5s reverse;
+  }
+  @keyframes bounce-in {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.25);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+}
+
+@mixin clickEffect {
+  transition: all 0.5s;
+  &:hover {
+    box-shadow: 3px 3px 4px 1px rgba($color: #000000, $alpha: 0.3);
+  }
+  &:active {
+    transform: scale(0.8);
+  }
+}
+
+@mixin glassStyle($shadowPx, $opacity: 0.3) {
+  position: relative;
+  overflow: hidden; //adding overflow hidden
+  z-index: 1;
+  background: {
+    position: center top;
+    size: cover;
+  }
+  &::before {
+    z-index: -1;
+    content: "";
+    background: {
+      size: cover;
+      image: inherit;
+      attachment: fixed;
+    }
+    position: absolute;
+    left: -71px;
+    right: 0;
+    top: -25px;
+    bottom: 0;
+    box-shadow: inset 0 0 0 $shadowPx rgba(255, 255, 255, $opacity);
+    filter: blur(20px);
+    margin: -30px;
+  }
+}
