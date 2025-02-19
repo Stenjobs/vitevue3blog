@@ -42,11 +42,11 @@ jobs:
                 tar -czf dist.tar.gz dist/
                 
                 # 使用 scp 传输文件到服务器
-                scp -o StrictHostKeyChecking=no dist.tar.gz root@8.134.205.132:/project/blogs/dist/
+                scp -o StrictHostKeyChecking=no dist.tar.gz root@8.134.205.132:/project/blogs/
                 
                 # 在服务器上解压文件
                 ssh -o StrictHostKeyChecking=no root@8.134.205.132 '
-                  cd /project/blogs/dist &&
+                  cd /project/blogs &&
                   rm -rf dist &&
                   tar -xzf dist.tar.gz &&
                   rm dist.tar.gz
